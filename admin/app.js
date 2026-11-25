@@ -1,5 +1,5 @@
 // Batel's private dashboard. The publishable key below is public by design; every number comes from admin_* SQL
-// functions (SQL 024) that refuse anyone who is not the confirmed admin email. Nothing secret is in this page.
+// functions (SQL 024) that refuse anyone who is not the admin (auth user id pinned in launch_admins). Nothing secret is in this page.
 const sb = supabase.createClient("https://tmtvblceqfaocjnhrzdb.supabase.co", "sb_publishable_vDuUS05HLXcFN3XwokCw5w_tjOEeV0a", { auth: { persistSession: true, detectSessionInUrl: true } });
 const $ = id => document.getElementById(id);
 const TZ = "Asia/Jerusalem";
