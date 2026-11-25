@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src https://tmtvblceqfaocjnhrzdb.supabase.co; base-uri 'none'; form-action 'none'">
+<title>NoodlePaws – דשבורד</title>
+<link rel="icon" href="/favicon.png">
+<style>
+:root{--bg:#f6f4f9;--card:#fff;--ink:#231f2e;--muted:#6f6880;--line:#e6e1ee;--v:#7b61ff;--s:#ff7a3d;--ok:#1f9d63;--bad:#c9372c}
+@media (prefers-color-scheme:dark){:root{--bg:#16131d;--card:#221e2c;--ink:#f1edf8;--muted:#a79fb8;--line:#363044}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+h1{font-size:20px;margin:0}h2{font-size:16px;margin:0 0 10px}
+.muted{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.big .card{margin:0}.num{font-size:44px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.v .num{color:var(--v)}.s .num{color:var(--s)}
+.sub{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:14px;color:var(--muted)}.sub b{color:var(--ink);font-variant-numeric:tabular-nums}
+.conv{font-size:14px;margin-top:4px}
+button,input,select{font:inherit;color:inherit}
+button{border:0;border-radius:10px;padding:10px 14px;background:var(--v);color:#fff;font-weight:700;cursor:pointer;min-height:44px}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5}
+input,select{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 10px;min-height:44px;width:100%}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.filters label{font-size:12px;color:var(--muted);display:block}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{color:var(--muted);font-weight:600;font-size:12px}td.e{direction:ltr;text-align:left;word-break:break-all}
+td .x{background:none;color:var(--muted);border:1px solid var(--line);padding:4px 8px;min-height:32px;font-size:12px}
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;direction:ltr;border-bottom:1px solid var(--line)}
+.day{flex:1;display:flex;align-items:flex-end;gap:1px;height:100%;position:relative}
+.bar{flex:1;border-radius:3px 3px 0 0;min-height:1px}.bar.v{background:var(--v)}.bar.s{background:var(--s)}
+.axis{display:flex;justify-content:space-between;direction:ltr;font-size:11px;color:var(--muted);margin-top:4px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin-bottom:8px}.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:5px;vertical-align:middle}
+.login{max-width:420px;margin:12vh auto}.login p{margin:0 0 12px}.login input{margin-bottom:10px}
+.msg{min-height:22px;font-size:14px;margin-top:8px}.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
+.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-left:6px;animation:p 2s infinite}@keyframes p{50%{opacity:.3}}
+.tbl{overflow-x:auto}
+@media (max-width:640px){.big{grid-template-columns:1fr}.num{font-size:40px}.filters{grid-template-columns:1fr 1fr}.filters .q{grid-column:1/-1}th.src,td.src{display:none}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="login" class="card login" hidden>
+  <h1>דשבורד NoodlePaws</h1>
+  <p class="muted">הכניסה רק עם המייל שלך. יישלח אלייך קישור כניסה למייל.</p>
+  <form id="lf"><input id="le" type="email" required autocomplete="email" placeholder="המייל שלך" dir="ltr"><button id="lb" type="submit" style="width:100%">שלחי לי קישור כניסה</button></form>
+  <div id="lm" class="msg"></div>
+</section>
+
+<section id="denied" class="card login" hidden>
+  <h1>אין הרשאה</h1><p class="muted">המשתמש הזה לא מורשה לראות את הדשבורד.</p><button class="ghost" data-out>יציאה</button>
+</section>
+
+<main id="app" hidden>
+  <header>
+    <div><h1>דף ההרשמה – noodlepaws.com/join</h1><div class="muted"><span class="live"></span><span id="upd">טוען…</span></div></div>
+    <button class="ghost" data-out>יציאה</button>
+  </header>
+
+  <div class="big">
+    <div class="card v"><div class="muted">נכנסו לדף היום</div><div class="num" id="vt">–</div>
+      <div class="sub"><span>בשעה האחרונה <b id="vh">–</b></span><span>ב-5 הדקות האחרונות <b id="v5">–</b></span><span>7 ימים <b id="v7">–</b></span><span>סה״כ <b id="va">–</b></span></div></div>
+    <div class="card s"><div class="muted">נרשמו עם מייל היום</div><div class="num" id="st">–</div>
+      <div class="sub"><span>בשעה האחרונה <b id="sh">–</b></span><span>7 ימים <b id="s7">–</b></span><span>סה״כ <b id="sa">–</b></span></div>
+      <div class="conv muted" id="conv"></div></div>
+  </div>
+
+  <div class="card">
+    <h2>לפי יום (30 יום אחרונים)</h2>
+    <div class="legend"><span><i class="dot" style="background:var(--v)"></i>כניסות לדף</span><span><i class="dot" style="background:var(--s)"></i>נרשמו</span></div>
+    <div class="chart" id="chart"></div><div class="axis"><span id="ax0"></span><span id="ax1"></span></div>
+  </div>
+
+  <div class="card">
+    <h2>מאיפה הגיעו</h2>
+    <div class="tbl"><table><thead><tr><th>מקור</th><th>כניסות</th><th>נרשמו</th><th>אחוז הרשמה</th></tr></thead><tbody id="srcs"></tbody></table></div>
+  </div>
+
+  <div class="card">
+    <h2>הנרשמים <span class="muted" id="cnt"></span></h2>
+    <div class="filters">
+      <div class="q"><label for="q">חיפוש</label><input id="q" type="search" placeholder="חיפוש מייל" dir="ltr"></div>
+      <div><label for="d0">מתאריך</label><input id="d0" type="date"></div>
+      <div><label for="d1">עד תאריך</label><input id="d1" type="date"></div>
+      <div><label for="sf">מקור</label><select id="sf"><option value="">הכל</option></select></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px"><button id="csv">ייצוא CSV</button><button class="ghost" id="clr">ניקוי סינון</button></div>
+    <div class="tbl"><table><thead><tr><th>מייל</th><th>תאריך ושעה (ישראל)</th><th class="src">מקור</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="muted" id="more" style="margin-top:8px"></div>
+  </div>
+  <div class="muted">הכניסות נספרות מ-25.11.2026 בלבד. כל טעינה של הדף נספרת ככניסה (בלי עוגיות ובלי זיהוי אנשים), כך שאדם שנכנס פעמיים נספר פעמיים.</div>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
+<script src="app.js"></script>
+</body>
+</html>
