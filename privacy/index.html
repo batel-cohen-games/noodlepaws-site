@@ -41,7 +41,7 @@
     <p>The game asks once, after your first match, whether it may send notifications. If you allow it, we keep your iPhone's notification token on our game server so we can tell you when a friend sends you a sticker while you are not in the game (for example "MAYA sent you a sticker" – your name is shown to your friends the same way). The message is delivered by Apple Push Notification service. The game also schedules a few reminders on your iPhone itself. You can turn notifications off at any time in iOS Settings; DELETE MY DATA also deletes the token.</p>
 
     <h2>Purchases</h2>
-    <p>NO ADS is an optional one-time purchase handled entirely by Apple. We never see your payment details. The game is told only whether NO ADS was bought.</p>
+    <p>NO ADS and the card and sticker packs in the shop are optional purchases handled entirely by Apple. We never see your payment details. The game is told only which item was bought (and its price, which is also reported to AppsFlyer – see Install attribution and tracking).</p>
 
     <h2>Optional analytics</h2>
     <p>Only if you turn on SHARE DATA, the game sends usage events to Unity Analytics (Unity Technologies) to help us improve the game: for example match starts and results, medals, NO ADS window visits and purchase results, stickers sent and Sign in with Apple results, together with device information such as model, iOS version, language, app version, approximate country and an installation ID. SHARE DATA is off unless you turn it on, and you can turn it off at any time in Settings. Turning it off stops collection; DELETE MY DATA also asks Unity to delete what was sent. Unity processes this data as described in its player privacy policy.</p>
@@ -49,16 +49,22 @@
     <p>If the game crashes or hits an error, it sends a crash report to Unity Cloud Diagnostics (Unity Technologies) so we can fix it: the error and the code where it happened, the app version, the iPhone model and iOS version, and a random device identifier. Crash reports are not linked to your game account or your name, are not used for advertising, and are sent whether or not SHARE DATA is on.</p>
 
     <h2>Ads</h2>
-    <p>The game is free and shows a full-screen ad now and then between matches against other players' games (never during a match, never in friend or live duels). Ads come from Google AdMob. To show and measure ads and prevent fraud, Google may process your IP address and approximate location, device information, and information about the ads you see and tap. The game always asks Google for non-personalised ads only (ads are not chosen from your past activity). In the EEA, the UK and Switzerland, Google asks for your choices first. We ask Google only for ads suitable for general audiences; if you see an inappropriate ad, tap Report an Ad in Settings. NO ADS (a one-time purchase) removes these ads. Read <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from apps that use its services</a>.</p>
+    <p>The game is free and shows a full-screen ad now and then between matches against other players' games (never during a match, never in friend or live duels). Ads come from Google AdMob. To show and measure ads and prevent fraud, Google may process your IP address and approximate location, device information, and information about the ads you see and tap. The game always asks Google for non-personalised ads only (ads are not chosen from your past activity). If you allow tracking when Apple asks, iOS also lets Google's SDK read the advertising identifier (IDFA), which Google may use to measure ads, limit how often an ad is shown and prevent fraud. In the EEA, the UK and Switzerland, Google asks for your choices first. We ask Google only for ads suitable for general audiences; if you see an inappropriate ad, tap Report an Ad in Settings. NO ADS (a one-time purchase) removes these ads. Read <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from apps that use its services</a>.</p>
 
-    <h2>Install attribution</h2>
-    <p>We advertise NoodlePaws (for example on Facebook and Instagram). To measure which of our ads and campaigns led to installs, the game uses AppsFlyer (AppsFlyer Ltd.). When you open the game, AppsFlyer receives device and app information (such as iPhone model, iOS version, language, app version and an ID AppsFlyer creates for this installation), your IP address, and the install and a few in-game events: finishing your first duel, reaching a new medal, and purchases (which item, its price and currency – never your payment details). The game does not use Apple's advertising identifier (IDFA) and does not ask Apple's permission to track you; campaign results come from Apple's privacy-preserving SKAdNetwork reports and aggregated statistics. AppsFlyer processes this data for us as our service provider. To have this data deleted, email us at support@noodlepaws.com.</p>
+    <h2>Install attribution and tracking</h2>
+    <p>We advertise NoodlePaws on other platforms, for example on Facebook and Instagram (Meta). To measure which of our ads and campaigns led to installs, the game uses AppsFlyer (AppsFlyer Ltd.). When you open the game, AppsFlyer receives device and app information (such as iPhone model, iOS version, language, app version, Apple's vendor identifier for apps (IDFV) and an ID AppsFlyer creates for this installation), your IP address, and the install and a few in-game events: finishing your first duel, reaching a new medal, and purchases (which item, its price and currency – never your payment details).</p>
+    <p><strong>Apple's tracking question.</strong> After your first finished match, iOS asks whether NoodlePaws may track your activity across other companies' apps and websites. It is your choice and the game works the same either way.</p>
+    <ul>
+      <li><strong>If you choose Allow:</strong> AppsFlyer also receives your iPhone's advertising identifier (IDFA) and, together with the data above, shares the install and these events with the ad networks we advertise on (such as Meta) so we can see which ad brought you to the game. This counts as "tracking" under Apple's rules.</li>
+      <li><strong>If you choose Ask App Not to Track</strong> (or tracking is turned off on your iPhone): the advertising identifier is not available to the game, AppsFlyer or any other SDK, and our campaigns are measured only through Apple's privacy-preserving SKAdNetwork reports, which give us totals, not individual players.</li>
+    </ul>
+    <p>You can change your answer at any time in iOS Settings → Privacy &amp; Security → Tracking. AppsFlyer processes this data for us as our service provider; Meta uses data it receives as described in its own privacy policy. To have the data AppsFlyer holds about your installation deleted, email us at <a href="mailto:support@noodlepaws.com">support@noodlepaws.com</a>.</p>
 
     <h2>What we don't do</h2>
     <ul>
       <li>We don't sell your data.</li>
-      <li>We don't track you across other companies' apps or websites, and the game does not use Apple's advertising identifier (IDFA).</li>
-      <li>The game does not ask Apple's permission to track you, so ads never use Apple's advertising identifier (IDFA).</li>
+      <li>We don't track you unless you choose Allow when Apple asks; without it, the game does not use Apple's advertising identifier (IDFA).</li>
+      <li>Ads in the game are always non-personalised (not chosen from your past activity), whatever your tracking answer.</li>
     </ul>
 
     <h2>Deleting your data</h2>
@@ -68,7 +74,7 @@
     <p>We keep your account data while you have an account. Stickers that are not seen within 7 days are no longer delivered. Pranks that are not seen within 24 hours are no longer delivered. Reports you make, and reports about you, are deleted with your account.</p>
 
     <h2>Where data is processed</h2>
-    <p>Our service providers (Supabase, Unity, Google, Apple, AppsFlyer and Resend) may process data in the United States and other countries, under their own safeguards.</p>
+    <p>Our service providers (Supabase, Unity, Google, Apple, AppsFlyer and Resend) and, if you allow tracking, the ad networks we advertise on (such as Meta Platforms) may process data in the United States and other countries, under their own safeguards.</p>
 
     <h2>Children</h2>
     <p>NoodlePaws is not directed at children under 13, and we do not knowingly collect personal data from them. If you believe a child has given us personal data, contact us and we will delete it.</p>
