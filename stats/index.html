@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>NoodlePaws · נתונים</title>
+<style>
+  :root { --bg:#FFF7E8; --card:#FFFFFF; --ink:#4C2C22; --mut:#8A6A5C; --line:#EADCC6; --g:#5BAE3C; --o:#F2A24A; --b:#4A8FD8; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif; }
+  main { max-width:980px; margin:0 auto; padding:16px; }
+  h1 { font-size:22px; margin:4px 0 2px; } h2 { font-size:16px; margin:22px 0 8px; }
+  .sub { color:var(--mut); font-size:13px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:12px 0; }
+  input, select, button { font:inherit; padding:8px 10px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); }
+  button { background:var(--g); color:#fff; border:0; font-weight:600; cursor:pointer; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; }
+  .k { color:var(--mut); font-size:12.5px; } .v { font-size:26px; font-weight:700; margin-top:2px; }
+  .chart { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; overflow-x:auto; }
+  .bars { display:flex; align-items:flex-end; gap:4px; height:150px; min-width:max-content; direction:ltr; }
+  .bar { width:22px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; font-size:10px; color:var(--mut); }
+  .bar i { display:block; width:100%; border-radius:5px 5px 0 0; min-height:2px; }
+  .bar b { font-weight:600; color:var(--ink); font-size:10.5px; }
+  .lbl { display:flex; gap:4px; direction:ltr; min-width:max-content; font-size:9.5px; color:var(--mut); margin-top:4px; }
+  .lbl span { width:22px; text-align:center; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  th, td { padding:7px 10px; text-align:right; border-bottom:1px solid var(--line); font-size:14px; } th { color:var(--mut); font-weight:600; font-size:12.5px; }
+  td.n { direction:ltr; text-align:right; font-variant-numeric:tabular-nums; }
+  .err { color:#C0392B; } .hide { display:none; }
+  .legend { font-size:12px; color:var(--mut); margin-top:6px; } .legend i { display:inline-block; width:10px; height:10px; border-radius:3px; margin:0 4px -1px 4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>NoodlePaws · נתונים חיים</h1>
+  <div class="sub" id="when">הנתונים מהשרת של המשחק, ברגע הפתיחה. שעון UTC.</div>
+
+  <div class="row" id="login">
+    <input id="pw" type="password" placeholder="סיסמה" autocomplete="current-password">
+    <select id="days"><option value="7">7 ימים</option><option value="14" selected>14 ימים</option><option value="30">30 ימים</option><option value="90">90 ימים</option></select>
+    <label class="sub">מתאריך <input id="since" type="date"></label>
+    <button id="go">הצג</button>
+    <span id="msg" class="err"></span>
+  </div>
+
+  <div id="out" class="hide">
+    <div class="grid" id="cards"></div>
+
+    <h2>כל יום</h2>
+    <div class="chart"><div class="bars" id="dailyBars"></div><div class="lbl" id="dailyLbl"></div>
+      <div class="legend"><i style="background:var(--o)"></i>שחקנים חדשים <i style="background:var(--g)"></i>שיחקו באותו יום</div></div>
+    <table style="margin-top:10px"><thead><tr><th>יום</th><th>חדשים</th><th>שיחקו</th><th>משחקים</th><th>חזרו למחרת</th></tr></thead><tbody id="dailyRows"></tbody></table>
+
+    <h2>איפה שחקנים נעצרים (השלב הכי רחוק שסיימו)</h2>
+    <div class="chart"><div class="bars" id="boardBars"></div><div class="lbl" id="boardLbl"></div>
+      <div class="legend"><i style="background:var(--b)"></i>שחקנים שזה השלב הכי רחוק שלהם · המספר הכהה: מהם לא שיחקו 3 ימים</div></div>
+  </div>
+</main>
+<script>
+const URL_ = "https://tmtvblceqfaocjnhrzdb.supabase.co/functions/v1/stats";
+const $ = (id) => document.getElementById(id);
+try { $("pw").value = localStorage.getItem("np_stats_pw") || ""; } catch (e) {}
+const fmt = (n) => (n ?? 0).toLocaleString("en-US");
+const pct = (a, b) => b ? Math.round(100 * a / b) + "%" : "–";
+
+function bars(el, lbl, items, max, color, top, under) {
+  el.innerHTML = ""; lbl.innerHTML = "";
+  for (const it of items) {
+    const h = max ? Math.max(2, Math.round(130 * it.v / max)) : 2;
+    el.insertAdjacentHTML("beforeend", `<div class="bar"><b>${it.v || ""}</b><i style="height:${h}px;background:${it.c || color}"></i>${under ? `<span>${under(it)}</span>` : ""}</div>`);
+    lbl.insertAdjacentHTML("beforeend", `<span>${it.l}</span>`);
+  }
+}
+
+async function load() {
+  $("msg").textContent = ""; const pw = $("pw").value.trim(); if (!pw) { $("msg").textContent = "צריך סיסמה"; return; }
+  $("go").disabled = true; $("go").textContent = "טוען…";
+  try {
+    const res = await fetch(URL_, { method: "POST", headers: { "x-stats-key": pw, "content-type": "application/json" },
+      body: JSON.stringify({ days: +$("days").value, since: $("since").value || null }) });
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok || !j.ok) { $("msg").textContent = res.status === 401 ? "סיסמה שגויה" : "שגיאה בשרת"; return; }
+    try { localStorage.setItem("np_stats_pw", pw); } catch (e) {}
+    render(j.stats);
+  } catch (e) { $("msg").textContent = "אין חיבור"; }
+  finally { $("go").disabled = false; $("go").textContent = "רענן"; }
+}
+
+function render(s) {
+  const t = s.totals;
+  $("when").textContent = "עודכן: " + new Date(s.now).toLocaleString("he-IL") + " · נתונים מהשרת של המשחק";
+  const cards = [
+    ["שחקנים (סה״כ)", t.players], ["חדשים היום", t.new_today], ["שיחקו היום", t.active_today], ["פעילים 7 ימים", t.active_7d],
+    ["מחוברים עכשיו", t.online_now], ["משחקים היום", t.matches_today], ["משחקים (סה״כ)", t.matches], ["דו-קרב חברים", t.friend_duels],
+    ["סטיקרים שנשלחו", t.stickers_sent], ["תעלולים שנשלחו", t.pranks_sent], ["דיווחים 7 ימים", t.reports_7d], ["מכשירים עם התראות", t.push_devices],
+  ];
+  $("cards").innerHTML = cards.map(([k, v]) => `<div class="card"><div class="k">${k}</div><div class="v">${fmt(v)}</div></div>`).join("");
+
+  const d = s.daily || [];
+  const maxD = Math.max(1, ...d.map((x) => Math.max(x.new_players, x.active)));
+  const items = []; for (const x of d) { items.push({ v: x.new_players, c: "var(--o)", l: "" }); items.push({ v: x.active, c: "var(--g)", l: x.day.slice(5) }); }
+  bars($("dailyBars"), $("dailyLbl"), items, maxD, null);
+  $("dailyRows").innerHTML = d.slice().reverse().map((x) => `<tr><td>${x.day}</td><td class="n">${fmt(x.new_players)}</td><td class="n">${fmt(x.active)}</td><td class="n">${fmt(x.matches)}</td>
+    <td class="n">${x.returned_d1 == null ? "עוד לא" : fmt(x.returned_d1) + " (" + pct(x.returned_d1, x.new_players) + ")"}</td></tr>`).join("");
+
+  const b = (s.furthest_board || []).filter((x) => x.board <= 120);
+  const maxB = Math.max(1, ...b.map((x) => x.players));
+  bars($("boardBars"), $("boardLbl"), b.map((x) => ({ v: x.players, l: x.board === 0 ? "0" : String(x.board), g: x.gone_3d })), maxB, "var(--b)", null, (it) => it.g ? `<b style="color:#1f4f86">${it.g}</b>` : "");
+  $("out").classList.remove("hide");
+}
+$("go").addEventListener("click", load);
+$("pw").addEventListener("keydown", (e) => { if (e.key === "Enter") load(); });
+if ($("pw").value) load();
+</script>
+</body>
+</html>
